@@ -1,0 +1,42 @@
+# Fly.io Configuration - Free Tier Only
+# ML Zoomcamp House Price Prediction API
+
+app = "house-price-ml"
+primary_region = "fra"
+
+[env]
+  PORT = "8000"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[http_service.ports]]
+  port = 80
+  handlers = ["http"]
+
+[[http_service.ports]]
+  port = 443
+  handlers = ["tls", "http"]
+
+[http_service.concurrency]
+  type = "connections"
+  hard_limit = 25
+  soft_limit = 20
+
+[[http_service.http_checks]]
+  interval = "30s"
+  timeout = "10s"
+  grace_period = "10s"
+  method = "GET"
+  path = "/health"
+
+[[vm]]
+  # Increased memory to accommodate model and deps; adjust if needed
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
